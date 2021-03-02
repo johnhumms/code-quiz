@@ -2,13 +2,18 @@
 
 var questions = [
     {
-        question: "What is 1+1?",
-        choices: ["1", "2", "3"],
-        answer: "2"
+        question: "Who shot first?",
+        choices: ["Greedo", "Han", "Luke"],
+        answer: "Han"
     },
-    {   question: "What is 2+2?",
-        choices: ["4", "5", "6"],
-        answer: "4"
+    {   question: "Who is Luke's Father?",
+        choices: ["Darth Vader", "Jabba the Hutt", "Yoda"],
+        answer: "Darth Vader"
+    },
+    {
+        question: "What is the name of the ice planet from The Empire Strikes Back?",
+        choices: ["Yavin", "Degobah", "Hoth"],
+        answer: "Hoth"
     }
 ]
 
@@ -105,17 +110,13 @@ function answerChoice(userChoice) {
     } else {
         displayQuestion(questions[currentQuestionIndex]);
     }
-
-    
 }
-
 
 function startQuiz() {
     $("#startQuizBtn").hide();
 
     displayQuestion(questions[currentQuestionIndex]);
 }
-
 
 $("#startQuizBtn").click(function() {
     startQuiz();
