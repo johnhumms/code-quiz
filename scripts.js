@@ -1,3 +1,5 @@
+
+
 var questions = [
     {
         question: "What is 1+1?",
@@ -12,6 +14,61 @@ var questions = [
 
 var currentQuestionIndex = 0;
 
+//timer
+var timeEl = document.querySelector(".time");
+
+// Selects element by id
+//var mainEl = document.getElementById("main");
+
+var secondsLeft = 5;
+
+var timerInterval;
+
+function setTime() {
+  // Sets interval in variable
+  timerInterval = setInterval(function() {
+    secondsLeft--;
+    timeEl.textContent = secondsLeft + " seconds left";
+
+    if(secondsLeft <= 0) {
+      // Stops execution of action at set interval
+      clearInterval(timerInterval);
+      // Calls function to create and append image
+      sendMessage();
+    }
+  }, 1000);
+}
+
+var score;
+
+function sendMessage() {
+    score = secondsLeft;
+    clearInterval(timerInterval);
+    timeEl.textContent = "You Scored: " + score + "!";
+    $("#questionsDiv").empty();
+    var heading = $("<h2></h2>").text("Enter your initials:  ");
+    var input = $("<input id='initials'>");
+    var button = $("<button id='save'>").text("Save");
+    heading.append(input);
+    heading.append(button);
+    $("#main").append(heading);
+}
+
+var highScores = JSON.parse(localStorage.getItem("high scores")) || [];
+
+$(document).on("click", "#save", function(){
+    console.log($("#initials").val());
+
+    var initials = $("#initials").val();
+    var savedScore = {name:initials,
+    score:score}
+    highScores.push(savedScore);
+    localStorage.setItem("high scores", JSON.stringify(highScores));
+});
+
+// make function for showing high scores (for loop to make separate divs)
+
+
 function displayQuestion(q) {
     $("#questionsDiv").empty();
     console.log(currentQuestionIndex);
@@ -22,13 +79,11 @@ function displayQuestion(q) {
         var choiceBtn = $("<button></button>").text(q.choices[i]);
         choiceBtn.addClass("choice");
         choiceBtn.val(q.choices[i]);
-        //choiceBtn.onclick = answerChoice;
         $("#questionsDiv").append(choiceBtn)
     }
 }
 
 $(document).on("click", ".choice", function(){
-    //alert($(this).val());
     console.log($(this).val());
     var userChoice=$(this).val()
     answerChoice(userChoice);
@@ -38,11 +93,20 @@ function answerChoice(userChoice) {
     console.log("clicked");
     if(userChoice !== questions[currentQuestionIndex].answer) {
         console.log("wrong");
+        secondsLeft -= 10;
     } else {
         console.log("correct");
+        secondsLeft += 10;
     }
     currentQuestionIndex++;
-    displayQuestion(questions[currentQuestionIndex]);
+    
+    if(currentQuestionIndex >= questions.length) {
+        sendMessage()
+    } else {
+        displayQuestion(questions[currentQuestionIndex]);
+    }
+
+    
 }
 
 
@@ -55,4 +119,5 @@ function startQuiz() {
 
 $("#startQuizBtn").click(function() {
     startQuiz();
+    setTime();
 })
